@@ -35,8 +35,11 @@ Database cleanup - customer requests to compare the time to look for keys to del
 **Commands Compared**
 
 Python commands used for searching users in the range of 400000 to 400009:
+
 r.keys(pattern='user:40000*')
+
 rs.search( Query("Paul @age:[400000 400009]") )
+
 
 **KEYS vs. SCAN clarification:**
 
