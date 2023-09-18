@@ -15,7 +15,7 @@ Database cleanup - customer requests to compare the time to look for keys to del
 
 **Test environment**
 
-**Cluster:** Redis Enterprise Software v6.4.2 installed on a cluster of 3 AWS t3.small nodes.
+**Cluster:** Redis Enterprise Software v6.4.2 installed on a cluster of 3 AWS t3.medium nodes.
 
 **Database:** 2GB with RediSearch and RedisJSON capabilities. 1 master shard with 1 replica.
 
