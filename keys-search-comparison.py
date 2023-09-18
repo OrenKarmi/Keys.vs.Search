@@ -68,7 +68,7 @@ def main():
     res = r1.keys(pattern='user:40000*')
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(f"Result is: ",res)
+    print(f"KEYS Result is: ",res)
     print(f"Elapsed time: {elapsed_time:.4f} seconds")
 
     # measure the time elapsed for the search query
@@ -79,7 +79,7 @@ def main():
             )
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(f"Result is: ",res)
+    print(f"FT.SEARCH Result is: ",res)
     print(f"Elapsed time: {elapsed_time:.4f} seconds")
 
 
