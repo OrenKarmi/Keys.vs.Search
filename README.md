@@ -2,6 +2,7 @@
 Comparing performance of KEYS vs. FT.SEARCH with 1m documents
 
 **Description**
+
 This document compares the performance of the KEYS command with FT.SEARCH.
 
 **Test Results**
@@ -9,6 +10,7 @@ This document compares the performance of the KEYS command with FT.SEARCH.
 Using **FT.SEARCH is x300 times faster than KEYS** / SCAN for searching 10 specific JSON documents out of a 1m keys database. (see Detailed Test Results below).
 
 **Motivation/ Background**
+
 Database cleanup - customer requests to compare the time to look for keys to delete based on a given pattern.
 
 **Test environment**
@@ -31,14 +33,17 @@ Database cleanup - customer requests to compare the time to look for keys to del
  ** An incrementing value from 1 to 1,000,000 was used for the “user ID” and “age” to have 1m different document keys.
  
 **Commands Compared**
+
 Python commands used for searching users in the range of 400000 to 400009:
 r.keys(pattern='user:40000*')
 rs.search( Query("Paul @age:[400000 400009]") )
 
 **KEYS vs. SCAN clarification:**
+
 The SCAN command is preferred over the KEYS command whenever the application needs to scan the entire key space. SCAN allows iterating on parts of the key space, limiting the response size to a given COUNT, and allowing other (queued) commands to operate between SCAN iterations. The SCAN command, therefore, scans the entire key space slower than KEYS. Hence, KEYS was used for this test.
 
 **Detailed Test Results**
+
 ubuntu@ip-172-31-25-197:/tmp$ python3 search-scan-comparison.py
 Result is:  ['user:400004', 'user:400008', 'user:400003', 'user:400005', 'user:400006', 'user:400000', 'user:400002', 'user:400007', 'user:40000', 'user:400001', 'user:400009']
 
