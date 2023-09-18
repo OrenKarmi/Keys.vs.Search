@@ -8,10 +8,15 @@ Using FT.SEARCH is x300 times faster than KEYS / SCAN for searching 10 specific 
 
 **Motivation/ Background**
 Database cleanup - customer requests to compare the time to look for keys to delete based on a given pattern.
+
 **Test environment**
+
 **Cluster:** Redis Enterprise Software v6.4.2 installed on a cluster of 3 AWS t3.small nodes.
+
 **Database:** 2GB with RediSearch and RedisJSON capabilities. 1 master shard with 1 replica.
+
 **Test implementation:** Python script calls for KEYS and FT.SEARCH and print the elapsed time for each command. The script is executed on a cluster node other than the node with the master shard.
+
 **JSON document used**:**
 'id': 'user:400000',
 'payload': None,
@@ -19,6 +24,7 @@ Database cleanup - customer requests to compare the time to look for keys to del
 "email":"paul.john@example.com",
 "age":400000,
 "city":"London"}'
+
 **Number of keys** loaded to the database: 1m
  ** An incrementing value from 1 to 1,000,000 was used for the “user ID” and “age” to have 1m different document keys.
  
