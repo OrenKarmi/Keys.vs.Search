@@ -3,7 +3,8 @@ Comparing performance of KEYS vs. FT.SEARCH with 1m documents
 
 **Description**
 This document compares the performance of the KEYS command with FT.SEARCH.
-Test Results
+
+**Test Results**
 Using **FT.SEARCH is x300 times faster than KEYS** / SCAN for searching 10 specific JSON documents out of a 1m keys database. (see Detailed Test Results below).
 
 **Motivation/ Background**
