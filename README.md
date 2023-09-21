@@ -1,13 +1,13 @@
 # Keys.vs.Search
-Comparing performance of KEYS vs. FT.SEARCH with 1m documents
+Comparing performance of KEYS vs. FT.SEARCH with 1m JSON and HASH documents
 
 **Description**
 
-This document compares the performance of the KEYS command with FT.SEARCH.
+This document compares the performance of the KEYS command with FT.SEARCH for JSON and HASH.
 
 **Test Results**
 
-Using **FT.SEARCH is x300 times faster than KEYS** / SCAN for searching 10 specific JSON documents out of a 1m keys database. (see Detailed Test Results below).
+Using **FT.SEARCH is x250 times faster than KEYS** / SCAN for searching 10 specific JSON documents or HASH keys out of a 1m keys database. (see Detailed Test Results below).
 
 **Motivation/ Background**
 
@@ -29,6 +29,16 @@ Database cleanup - customer requests to compare the time to look for keys to del
 "age":400000,
 "city":"London"}'
 
+**HASH document used**:**
+1) "name"
+2) "Paul John"
+3) "email"
+4) "paul.john@example.com"
+5) "age"
+6) "400000"
+7) "city"
+8) "London"
+
 **Number of keys** loaded to the database: 1m
  ** An incrementing value from 1 to 1,000,000 was used for the “user ID” and “age” to have 1m different document keys.
  
@@ -37,8 +47,8 @@ Database cleanup - customer requests to compare the time to look for keys to del
 Python commands used for searching users in the range of 400000 to 400009:
 
 r.keys(pattern='user:40000*')
-
-rs.search( Query("Paul @age:[400000 400009]") )
+rs.json.search( Query("Paul @age:[400000 400009]") )
+rs.hash.search( Query("Paul @age:[400000 400009]") )
 
 
 **KEYS vs. SCAN clarification:**
@@ -47,13 +57,15 @@ The SCAN command is preferred over the KEYS command whenever the application nee
 
 **Detailed Test Results**
 
-ubuntu@ip-172-31-25-197:/tmp$ python3 search-scan-comparison.py
+ubuntu@ip-172-31-16-127:~$ python3 keys-search-comparison.py
+KEYS Result is:  ['user:hash:400007', 'user:hash:400009', 'user:hash:400000', 'user:hash:400008', 'user:hash:400002', 'user:hash:400005', 'user:hash:400006', 'user:hash:400003', 'user:hash:40000', 'user:hash:400001', 'user:hash:400004']
 
-KEYS Result is:  ['user:400004', 'user:400008', 'user:400003', 'user:400005', 'user:400006', 'user:400000', 'user:400002', 'user:400007', 'user:40000', 'user:400001', 'user:400009']
+**KEYS Elapsed time: 0.3731 seconds**
 
-**Elapsed time: 0.4153 seconds**
+FT.SEARCH for JSON Result is:  Result{9 total, docs: [Document {'id': 'user:json:400001', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400001,"city":"London"}'}, Document {'id': 'user:json:400002', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400002,"city":"London"}'}, Document {'id': 'user:json:400003', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400003,"city":"London"}'}, Document {'id': 'user:json:400004', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400004,"city":"London"}'}, Document {'id': 'user:json:400005', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400005,"city":"London"}'}, Document {'id': 'user:json:400006', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400006,"city":"London"}'}, Document {'id': 'user:json:400007', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400007,"city":"London"}'}, Document {'id': 'user:json:400008', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400008,"city":"London"}'}, Document {'id': 'user:json:400009', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400009,"city":"London"}'}]}
 
-FT.SEARCH Result is:  Result{10 total, docs: [Document {'id': 'user:400000', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400000,"city":"London"}'}, Document {'id': 'user:400001', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400001,"city":"London"}'}, Document {'id': 'user:400002', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400002,"city":"London"}'}, Document {'id': 'user:400003', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400003,"city":"London"}'}, Document {'id': 'user:400004', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400004,"city":"London"}'}, Document {'id': 'user:400005', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400005,"city":"London"}'}, Document {'id': 'user:400006', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400006,"city":"London"}'}, Document {'id': 'user:400007', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400007,"city":"London"}'}, Document {'id': 'user:400008', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400008,"city":"London"}'}, Document {'id': 'user:400009', 'payload': None, 'json': '{"name":"Paul John","email":"paul.john@example.com","age":400009,"city":"London"}'}]}
+**JSON Search Elapsed time: 0.0016 seconds**
 
-**Elapsed time: 0.0013 seconds**
+FT.SEARCH for HASH Result is:  Result{9 total, docs: [Document {'id': 'user:hash:400001', 'payload': None, 'name': 'Paul John', 'email': 'paul.john@example.com', 'age': '400001', 'city': 'London'}, Document {'id': 'user:hash:400002', 'payload': None, 'name': 'Paul John', 'email': 'paul.john@example.com', 'age': '400002', 'city': 'London'}, Document {'id': 'user:hash:400003', 'payload': None, 'name': 'Paul John', 'email': 'paul.john@example.com', 'age': '400003', 'city': 'London'}, Document {'id': 'user:hash:400004', 'payload': None, 'name': 'Paul John', 'email': 'paul.john@example.com', 'age': '400004', 'city': 'London'}, Document {'id': 'user:hash:400005', 'payload': None, 'name': 'Paul John', 'email': 'paul.john@example.com', 'age': '400005', 'city': 'London'}, Document {'id': 'user:hash:400006', 'payload': None, 'name': 'Paul John', 'email': 'paul.john@example.com', 'age': '400006', 'city': 'London'}, Document {'id': 'user:hash:400007', 'payload': None, 'name': 'Paul John', 'email': 'paul.john@example.com', 'age': '400007', 'city': 'London'}, Document {'id': 'user:hash:400008', 'payload': None, 'name': 'Paul John', 'email': 'paul.john@example.com', 'age': '400008', 'city': 'London'}, Document {'id': 'user:hash:400009', 'payload': None, 'name': 'Paul John', 'email': 'paul.john@example.com', 'age': '400009', 'city': 'London'}]}
 
+**HASH Search Elapsed time: 0.0016 seconds**
